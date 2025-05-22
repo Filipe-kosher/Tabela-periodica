@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tabela Periódica Moderna</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+
+:root {
+  --bg-color: #0f0a1a;
+  --bg-gradient: linear-gradient(135deg, #0f0a1a 0%, #1a1030 100%);
+  --text-color: #f8f4ff;
+  --card-bg: rgba(40, 25, 70, 0.9);
+  --card-border: rgba(202, 11, 245, 0.2);
+  --card-hover: rgba(202, 11, 245, 0.1);
+  --modal-bg: rgba(15, 10, 26, 0.95);
+  --nonmetal: #10f5a9;
+  --noble-gas: #8b5cf6;
+  --alkali-metal: #ff6b6b;
+  --alkaline-earth: #f9a73e;
+  --metalloid: #eab308;
+  --halogen: #3b82f6;
+  --transition: #ec4899;
+  --post-transition: #a855f7;
+  --lanthanoid: #14b8a6;
+  --actinoid: #06d6d4;
+  --accent-color: #351352;
+  --text-secondary: #c4b5fd;
+  --glass-effect: rgba(202, 11, 245, 0.05);
+}
+
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+        background: radial-gradient(circle at 10% 20%, rgba(202, 11, 245, 0.4) 0%, transparent 33%), 
+              radial-gradient(circle at 90% 80%, rgba(202, 11, 245, 0.4) 0%, transparent 33%),
+              var(--bg-gradient);	
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 2rem;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(to bottom, #fff, var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    .category-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      background: var(--glass-effect);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .legend-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .legend-item.active {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .periodic-table {
+      display: grid;
+      grid-template-columns: repeat(18, 1fr);
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .element {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.2rem;
+      padding: 0rem;
+      aspect-ratio: 0.4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      backdrop-filter: none;
+      box-shadow: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .element.hidden {
+      opacity: 0.2;
+      transform: scale(0.9);
+      pointer-events: none;
+    }
+
+    .element:hover {
+      transform: translateY(0);
+      box-shadow: none;
+      background: var(--card-hover);
+    }
+
+    .nonmetal { color: var(--nonmetal); }
+    .noble-gas { color: var(--noble-gas); }
+    .alkali-metal { color: var(--alkali-metal); }
+    .alkaline-earth { color: var(--alkaline-earth); }
+    .metalloid { color: var(--metalloid); }
+    .halogen { color: var(--halogen); }
+    .transition { color: var(--transition); }
+    .post-transition { color: var(--post-transition); }
+    .lanthanoid { color: var(--lanthanoid); }
+    .actinoid { color: var(--actinoid); }
+
+    .atomic-number {
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.8;
+      text-align: right;
+      width: 100%;
+    }
+
+    .symbol {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 0.25rem 0;
+      font-family: 'Space Grotesk', sans-serif;
+      text-align: left;
+      padding-left: 0.5rem;
+      width: 100%;
+    }
+
+    .name {
+      font-size: 0.65rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0.9;
+      width: 100%;
+    }
+
+    .mass {
+      font-size: 0.65rem;
+      text-align: center;
+      margin-top: auto;
+      opacity: 0.7;
+      width: 100%;
+    }
+
+    .electron-config {
+      font-size: 0.55rem;
+      text-align: center;
+      opacity: 0.6;
+      margin-top: 0.2rem;
+      width: 100%;
+      word-break: break-all;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: var(--modal-bg);
+      border-radius: 1.25rem;
+      padding: 2.2rem;
+      max-width: 585px;
+      width: 100%;
+      height: 625px;
+      border: 1px solid var(--card-border);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-color), #6366f1);
+    }
+
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .modal-symbol {
+      font-size: 3.5rem;
+      font-weight: 700;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      font-family: 'Space Grotesk', sans-serif;
+      flex-shrink: 0;
+    }
+
+    .modal-title h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .modal-category {
+      font-size: 1rem;
+      opacity: 0.9;
+      text-transform: capitalize;
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .modal-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-item-label {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .modal-item-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    @media (max-width: 1200px) {
+      .periodic-table {
+        grid-template-columns: repeat(9, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .periodic-table {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      
+      h1 {
+        font-size: 2.25rem;
+      }
+      
+      .modal-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .modal-symbol {
+        width: 70px;
+        height: 70px;
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1.5rem;
+      }
+      
+      .periodic-table {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+    }
+    
+    .close-btn {
+      visibility: hidden;
+    }
+
+    .clear-filter {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--glass-effect);
+      border: 1px solid var(--card-border);
+      color: var(--text-color);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: none;
+    }
+
+    .clear-filter:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .clear-filter.active {
+      display: inline-block;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Tabela Periódica</h1>
+      <div class="category-legend" id="categoryLegend">
+        <div class="legend-item" data-category="alkali-metal">
+          <div class="legend-color" style="background: var(--alkali-metal);"></div>
+          <span>Metais Alcalinos</span>
+        </div>
+        <div class="legend-item" data-category="alkaline-earth">
+          <div class="legend-color" style="background: var(--alkaline-earth);"></div>
+          <span>Metais Alcalino-Terrosos</span>
+        </div>
+        <div class="legend-item" data-category="transition">
+          <div class="legend-color" style="background: var(--transition);"></div>
+          <span>Metais de Transição</span>
+        </div>
+        <div class="legend-item" data-category="post-transition">
+          <div class="legend-color" style="background: var(--post-transition);"></div>
+          <span>Metais Pós-Transição</span>
+        </div>
+        <div class="legend-item" data-category="metalloid">
+          <div class="legend-color" style="background: var(--metalloid);"></div>
+          <span>Metaloides</span>
+        </div>
+        <div class="legend-item" data-category="nonmetal">
+          <div class="legend-color" style="background: var(--nonmetal);"></div>
+          <span>Não Metais</span>
+        </div>
+        <div class="legend-item" data-category="halogen">
+          <div class="legend-color" style="background: var(--halogen);"></div>
+          <span>Halogênios</span>
+        </div>
+        <div class="legend-item" data-category="noble-gas">
+          <div class="legend-color" style="background: var(--noble-gas);"></div>
+          <span>Gases Nobres</span>
+        </div>
+        <div class="legend-item" data-category="lanthanoid">
+          <div class="legend-color" style="background: var(--lanthanoid);"></div>
+          <span>Lantanídeos</span>
+        </div>
+        <div class="legend-item" data-category="actinoid">
+          <div class="legend-color" style="background: var(--actinoid);"></div>
+          <span>Actinídeos</span>
+        </div>
+      </div>
+      
+      <button class="clear-filter" id="clearFilter">Mostrar todos os elementos</button>
+    </header>
+
+    <div class="periodic-table" id="periodicTable"></div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-symbol" id="modalSymbol"></div>
+        <div class="modal-title">
+          <h2 id="modalName"></h2>
+          <div class="modal-category" id="modalCategory"></div>
+        </div>
+      </div>
+      
+      <div class="modal-grid">
+        <div class="modal-item">
+          <div class="modal-item-label">Número Atômico</div>
+          <div class="modal-item-value" id="modalNumber"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Símbolo</div>
+          <div class="modal-item-value" id="modalSymbol2"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Massa Atômica</div>
+          <div class="modal-item-value" id="modalMass"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Categoria</div>
+          <div class="modal-item-value" id="modalCategory2"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Configuração Eletrônica</div>
+          <div class="modal-item-value" id="modalElectron"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Estado (25°C)</div>
+          <div class="modal-item-value" id="modalState"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Ano de Descoberta</div>
+          <div class="modal-item-value" id="modalDiscovered"></div>
+        </div>
+        <div class="modal-item">
+          <div class="modal-item-label">Densidade (g/cm³)</div>
+          <div class="modal-item-value" id="modalDensity"></div>
+        </div>
+      </div>
+      
+      <button class="close-btn" id="closeBtn">carai</button>
+    </div>
+  </div>
+
+  <script>
+    const elements = [
+      { number: 1, symbol: 'H', name: 'Hidrogênio', category: 'nonmetal', mass: '1.008', electron: '1s¹', state: 'Gasoso', discovered: '1766', density: '0.00008988' },
+      { number: 2, symbol: 'He', name: 'Hélio', category: 'noble-gas', mass: '4.003', electron: '1s²', state: 'Gasoso', discovered: '1868', density: '0.0001785' },
+      { number: 3, symbol: 'Li', name: 'Lítio', category: 'alkali-metal', mass: '6.941', electron: '[He] 2s¹', state: 'Sólido', discovered: '1817', density: '0.534' },
+      { number: 4, symbol: 'Be', name: 'Berílio', category: 'alkaline-earth', mass: '9.012', electron: '[He] 2s²', state: 'Sólido', discovered: '1798', density: '1.85' },
+      { number: 5, symbol: 'B', name: 'Boro', category: 'metalloid', mass: '10.811', electron: '[He] 2s² 2p¹', state: 'Sólido', discovered: '1808', density: '2.34' },
+      { number: 6, symbol: 'C', name: 'Carbono', category: 'nonmetal', mass: '12.011', electron: '[He] 2s² 2p²', state: 'Sólido', discovered: '1789', density: '2.267' },
+      { number: 7, symbol: 'N', name: 'Nitrogênio', category: 'nonmetal', mass: '14.007', electron: '[He] 2s² 2p³', state: 'Gasoso', discovered: '1772', density: '0.0012506' },
+      { number: 8, symbol: 'O', name: 'Oxigênio', category: 'nonmetal', mass: '15.999', electron: '[He] 2s² 2p⁴', state: 'Gasoso', discovered: '1774', density: '0.001429' },
+      { number: 9, symbol: 'F', name: 'Flúor', category: 'halogen', mass: '18.998', electron: '[He] 2s² 2p⁵', state: 'Gasoso', discovered: '1886', density: '0.001696' },
+      { number: 10, symbol: 'Ne', name: 'Neônio', category: 'noble-gas', mass: '20.180', electron: '[He] 2s² 2p⁶', state: 'Gasoso', discovered: '1898', density: '0.0008999' },
+      { number: 11, symbol: 'Na', name: 'Sódio', category: 'alkali-metal', mass: '22.990', electron: '[Ne] 3s¹', state: 'Sólido', discovered: '1807', density: '0.968' },
+      { number: 12, symbol: 'Mg', name: 'Magnésio', category: 'alkaline-earth', mass: '24.305', electron: '[Ne] 3s²', state: 'Sólido', discovered: '1755', density: '1.738' },
+      { number: 13, symbol: 'Al', name: 'Alumínio', category: 'post-transition', mass: '26.982', electron: '[Ne] 3s² 3p¹', state: 'Sólido', discovered: '1825', density: '2.70' },
+      { number: 14, symbol: 'Si', name: 'Silício', category: 'metalloid', mass: '28.085', electron: '[Ne] 3s² 3p²', state: 'Sólido', discovered: '1824', density: '2.3296' },
+      { number: 15, symbol: 'P', name: 'Fósforo', category: 'nonmetal', mass: '30.974', electron: '[Ne] 3s² 3p³', state: 'Sólido', discovered: '1669', density: '1.82' },
+      { number: 16, symbol: 'S', name: 'Enxofre', category: 'nonmetal', mass: '32.06', electron: '[Ne] 3s² 3p⁴', state: 'Sólido', discovered: '1777', density: '2.067' },
+      { number: 17, symbol: 'Cl', name: 'Cloro', category: 'halogen', mass: '35.45', electron: '[Ne] 3s² 3p⁵', state: 'Gasoso', discovered: '1774', density: '0.003214' },
+      { number: 18, symbol: 'Ar', name: 'Argônio', category: 'noble-gas', mass: '39.948', electron: '[Ne] 3s² 3p⁶', state: 'Gasoso', discovered: '1894', density: '0.0017837' },
+      { number: 19, symbol: 'K', name: 'Potássio', category: 'alkali-metal', mass: '39.098', electron: '[Ar] 4s¹', state: 'Sólido', discovered: '1807', density: '0.89' },
+      { number: 20, symbol: 'Ca', name: 'Cálcio', category: 'alkaline-earth', mass: '40.078', electron: '[Ar] 4s²', state: 'Sólido', discovered: '1808', density: '1.55' },
+      { number: 21, symbol: 'Sc', name: 'Escândio', category: 'transition', mass: '44.956', electron: '[Ar] 3d¹ 4s²', state: 'Sólido', discovered: '1879', density: '2.985' },
+      { number: 22, symbol: 'Ti', name: 'Titânio', category: 'transition', mass: '47.867', electron: '[Ar] 3d² 4s²', state: 'Sólido', discovered: '1791', density: '4.506' },
+      { number: 23, symbol: 'V', name: 'Vanádio', category: 'transition', mass: '50.942', electron: '[Ar] 3d³ 4s²', state: 'Sólido', discovered: '1801', density: '6.11' },
+      { number: 24, symbol: 'Cr', name: 'Cromo', category: 'transition', mass: '51.996', electron: '[Ar] 3d⁵ 4s¹', state: 'Sólido', discovered: '1797', density: '7.15' },
+      { number: 25, symbol: 'Mn', name: 'Manganês', category: 'transition', mass: '54.938', electron: '[Ar] 3d⁵ 4s²', state: 'Sólido', discovered: '1774', density: '7.44' },
+      { number: 26, symbol: 'Fe', name: 'Ferro', category: 'transition', mass: '55.845', electron: '[Ar] 3d⁶ 4s²', state: 'Sólido', discovered: '3.000 a.C', density: '7.874' },
+      { number: 27, symbol: 'Co', name: 'Cobalto', category: 'transition', mass: '58.933', electron: '[Ar] 3d⁷ 4s²', state: 'Sólido', discovered: '1735', density: '8.86' },
+      { number: 28, symbol: 'Ni', name: 'Níquel', category: 'transition', mass: '58.693', electron: '[Ar] 3d⁸ 4s²', state: 'Sólido', discovered: '1751', density: '8.912' },
+      { number: 29, symbol: 'Cu', name: 'Cobre', category: 'transition', mass: '63.546', electron: '[Ar] 3d¹⁰ 4s¹', state: 'Sólido', discovered: '9000 a.C.', density: '8.96' },
+      { number: 30, symbol: 'Zn', name: 'Zinco', category: 'transition', mass: '65.38', electron: '[Ar] 3d¹⁰ 4s²', state: 'Sólido', discovered: '1746', density: '7.134' },
+      { number: 31, symbol: 'Ga', name: 'Gálio', category: 'post-transition', mass: '69.723', electron: '[Ar] 3d¹⁰ 4s² 4p¹', state: 'Sólido', discovered: '1875', density: '5.907' },
+      { number: 32, symbol: 'Ge', name: 'Germânio', category: 'metalloid', mass: '72.630', electron: '[Ar] 3d¹⁰ 4s² 4p²', state: 'Sólido', discovered: '1886', density: '5.323' },
+      { number: 33, symbol: 'As', name: 'Arsênio', category: 'metalloid', mass: '74.922', electron: '[Ar] 3d¹⁰ 4s² 4p³', state: 'Sólido', discovered: '1250', density: '5.776' },
+      { number: 34, symbol: 'Se', name: 'Selênio', category: 'nonmetal', mass: '78.971', electron: '[Ar] 3d¹⁰ 4s² 4p⁴', state: 'Sólido', discovered: '1817', density: '4.809' },
+      { number: 35, symbol: 'Br', name: 'Bromo', category: 'halogen', mass: '79.904', electron: '[Ar] 3d¹⁰ 4s² 4p⁵', state: 'Líquido', discovered: '1826', density: '3.122' },
+      { number: 36, symbol: 'Kr', name: 'Criptônio', category: 'noble-gas', mass: '83.798', electron: '[Ar] 3d¹⁰ 4s² 4p⁶', state: 'Gasoso', discovered: '1898', density: '0.003733' },
+      { number: 37, symbol: 'Rb', name: 'Rubídio', category: 'alkali-metal', mass: '85.468', electron: '[Kr] 5s¹', state: 'Sólido', discovered: '1861', density: '1.532' },
+      { number: 38, symbol: 'Sr', name: 'Estrôncio', category: 'alkaline-earth', mass: '87.62', electron: '[Kr] 5s²', state: 'Sólido', discovered: '1790', density: '2.64' },
+      { number: 39, symbol: 'Y', name: 'Ítrio', category: 'transition', mass: '88.906', electron: '[Kr] 4d¹ 5s²', state: 'Sólido', discovered: '1794', density: '4.469' },
+      { number: 40, symbol: 'Zr', name: 'Zircônio', category: 'transition', mass: '91.224', electron: '[Kr] 4d² 5s²', state: 'Sólido', discovered: '1789', density: '6.506' },
+      { number: 41, symbol: 'Nb', name: 'Nióbio', category: 'transition', mass: '92.906', electron: '[Kr] 4d⁴ 5s¹', state: 'Sólido', discovered: '1801', density: '8.57' },
+      { number: 42, symbol: 'Mo', name: 'Molibdênio', category: 'transition', mass: '95.95', electron: '[Kr] 4d⁵ 5s¹', state: 'Sólido', discovered: '1781', density: '10.22' },
+      { number: 43, symbol: 'Tc', name: 'Tecnécio', category: 'transition', mass: '(98)', electron: '[Kr] 4d⁵ 5s²', state: 'Sólido', discovered: '1937', density: '11.5' },
+      { number: 44, symbol: 'Ru', name: 'Rutênio', category: 'transition', mass: '101.07', electron: '[Kr] 4d⁷ 5s¹', state: 'Sólido', discovered: '1844', density: '12.37' },
+      { number: 45, symbol: 'Rh', name: 'Ródio', category: 'transition', mass: '102.91', electron: '[Kr] 4d⁸ 5s¹', state: 'Sólido', discovered: '1803', density: '12.41' },
+      { number: 46, symbol: 'Pd', name: 'Paládio', category: 'transition', mass: '106.42', electron: '[Kr] 4d¹⁰', state: 'Sólido', discovered: '1803', density: '12.02' },
+      { number: 47, symbol: 'Ag', name: 'Prata', category: 'transition', mass: '107.87', electron: '[Kr] 4d¹⁰ 5s¹', state: 'Sólido', discovered: '3000 a.C', density: '10.501' },
+      { number: 48, symbol: 'Cd', name: 'Cádmio', category: 'transition', mass: '112.41', electron: '[Kr] 4d¹⁰ 5s²', state: 'Sólido', discovered: '1817', density: '8.69' },
+      { number: 49, symbol: 'In', name: 'Índio', category: 'post-transition', mass: '114.82', electron: '[Kr] 4d¹⁰ 5s² 5p¹', state: 'Sólido', discovered: '1863', density: '7.31' },
+      { number: 50, symbol: 'Sn', name: 'Estanho', category: 'post-transition', mass: '118.71', electron: '[Kr] 4d¹⁰ 5s² 5p²', state: 'Sólido', discovered: '3.500 a.C', density: '7.287' },
+      { number: 51, symbol: 'Sb', name: 'Antimônio', category: 'metalloid', mass: '121.76', electron: '[Kr] 4d¹⁰ 5s² 5p³', state: 'Sólido', discovered: '1600 a.C.', density: '6.685' },
+      { number: 52, symbol: 'Te', name: 'Telúrio', category: 'metalloid', mass: '127.60', electron: '[Kr] 4d¹⁰ 5s² 5p⁴', state: 'Sólido', discovered: '1782', density: '6.232' },
+      { number: 53, symbol: 'I', name: 'Iodo', category: 'halogen', mass: '126.90', electron: '[Kr] 4d¹⁰ 5s² 5p⁵', state: 'Sólido', discovered: '1811', density: '4.93' },
+      { number: 54, symbol: 'Xe', name: 'Xenônio', category: 'noble-gas', mass: '131.29', electron: '[Kr] 4d¹⁰ 5s² 5p⁶', state: 'Gasoso', discovered: '1898', density: '0.005887' },
+      { number: 55, symbol: 'Cs', name: 'Césio', category: 'alkali-metal', mass: '132.91', electron: '[Xe] 6s¹', state: 'Sólido', discovered: '1860', density: '1.873' },
+      { number: 56, symbol: 'Ba', name: 'Bário', category: 'alkaline-earth', mass: '137.33', electron: '[Xe] 6s²', state: 'Sólido', discovered: '1808', density: '3.594' },
+      { number: 57, symbol: 'La', name: 'Lantânio', category: 'lanthanoid', mass: '138.91', electron: '[Xe] 5d¹ 6s²', state: 'Sólido', discovered: '1839', density: '6.146' },
+      { number: 58, symbol: 'Ce', name: 'Cério', category: 'lanthanoid', mass: '140.12', electron: '[Xe] 4f¹ 5d¹ 6s²', state: 'Sólido', discovered: '1803', density: '6.689' },
+      { number: 59, symbol: 'Pr', name: 'Praseodímio', category: 'lanthanoid', mass: '140.91', electron: '[Xe] 4f³ 6s²', state: 'Sólido', discovered: '1885', density: '6.64' },
+      { number: 60, symbol: 'Nd', name: 'Neodímio', category: 'lanthanoid', mass: '144.24', electron: '[Xe] 4f⁴ 6s²', state: 'Sólido', discovered: '1885', density: '6.8' },
+      { number: 61, symbol: 'Pm', name: 'Promécio', category: 'lanthanoid', mass: '(145)', electron: '[Xe] 4f⁵ 6s²', state: 'Sólido', discovered: '1945', density: '7.22' },
+      { number: 62, symbol: 'Sm', name: 'Samário', category: 'lanthanoid', mass: '150.36', electron: '[Xe] 4f⁶ 6s²', state: 'Sólido', discovered: '1879', density: '7.353' },
+      { number: 63, symbol: 'Eu', name: 'Európio', category: 'lanthanoid', mass: '151.96', electron: '[Xe] 4f⁷ 6s²', state: 'Sólido', discovered: '1901', density: '5.244' },
+      { number: 64, symbol: 'Gd', name: 'Gadolínio', category: 'lanthanoid', mass: '157.25', electron: '[Xe] 4f⁷ 5d¹ 6s²', state: 'Sólido', discovered: '1880', density: '7.901' },
+      { number: 65, symbol: 'Tb', name: 'Térbio', category: 'lanthanoid', mass: '158.93', electron: '[Xe] 4f⁹ 6s²', state: 'Sólido', discovered: '1843', density: '8.219' },
+      { number: 66, symbol: 'Dy', name: 'Disprósio', category: 'lanthanoid', mass: '162.50', electron: '[Xe] 4f¹⁰ 6s²', state: 'Sólido', discovered: '1886', density: '8.551' },
+      { number: 67, symbol: 'Ho', name: 'Hólmio', category: 'lanthanoid', mass: '164.93', electron: '[Xe] 4f¹¹ 6s²', state: 'Sólido', discovered: '1878', density: '8.795' },
+      { number: 68, symbol: 'Er', name: 'Érbio', category: 'lanthanoid', mass: '167.26', electron: '[Xe] 4f¹² 6s²', state: 'Sólido', discovered: '1843', density: '9.066' },
+      { number: 69, symbol: 'Tm', name: 'Túlio', category: 'lanthanoid', mass: '168.93', electron: '[Xe] 4f¹³ 6s²', state: 'Sólido', discovered: '1879', density: '9.321' },
+      { number: 70, symbol: 'Yb', name: 'Itérbio', category: 'lanthanoid', mass: '173.05', electron: '[Xe] 4f¹⁴ 6s²', state: 'Sólido', discovered: '1878', density: '6.965' },
+      { number: 71, symbol: 'Lu', name: 'Lutécio', category: 'lanthanoid', mass: '174.97', electron: '[Xe] 4f¹⁴ 5d¹ 6s²', state: 'Sólido', discovered: '1907', density: '9.841' },
+      { number: 72, symbol: 'Hf', name: 'Háfnio', category: 'transition', mass: '178.49', electron: '[Xe] 4f¹⁴ 5d² 6s²', state: 'Sólido', discovered: '1923', density: '13.31' },
+      { number: 73, symbol: 'Ta', name: 'Tântalo', category: 'transition', mass: '180.95', electron: '[Xe] 4f¹⁴ 5d³ 6s²', state: 'Sólido', discovered: '1802', density: '16.654' },
+      { number: 74, symbol: 'W', name: 'Tungstênio', category: 'transition', mass: '183.84', electron: '[Xe] 4f¹⁴ 5d⁴ 6s²', state: 'Sólido', discovered: '1783', density: '19.25' },
+      { number: 75, symbol: 'Re', name: 'Rênio', category: 'transition', mass: '186.21', electron: '[Xe] 4f¹⁴ 5d⁵ 6s²', state: 'Sólido', discovered: '1925', density: '21.02' },
+      { number: 76, symbol: 'Os', name: 'Ósmio', category: 'transition', mass: '190.23', electron: '[Xe] 4f¹⁴ 5d⁶ 6s²', state: 'Sólido', discovered: '1803', density: '22.61' },
+      { number: 77, symbol: 'Ir', name: 'Irídio', category: 'transition', mass: '192.22', electron: '[Xe] 4f¹⁴ 5d⁷ 6s²', state: 'Sólido', discovered: '1803', density: '22.56' },
+      { number: 78, symbol: 'Pt', name: 'Platina', category: 'transition', mass: '195.08', electron: '[Xe] 4f¹⁴ 5d⁹ 6s¹', state: 'Sólido', discovered: '1735', density: '21.46' },
+      { number: 79, symbol: 'Au', name: 'Ouro', category: 'transition', mass: '196.97', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s¹', state: 'Sólido', discovered: '1695', density: '19.282' },
+      { number: 80, symbol: 'Hg', name: 'Mercúrio', category: 'transition', mass: '200.59', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s²', state: 'Líquido', discovered: '1610', density: '13.5336' },
+      { number: 81, symbol: 'Tl', name: 'Tálio', category: 'post-transition', mass: '204.38', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹', state: 'Sólido', discovered: '1861', density: '11.85' },
+      { number: 82, symbol: 'Pb', name: 'Chumbo', category: 'post-transition', mass: '207.2', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²', state: 'Sólido', discovered: '3800 a.C', density: '11.342' },
+      { number: 83, symbol: 'Bi', name: 'Bismuto', category: 'post-transition', mass: '208.98', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³', state: 'Sólido', discovered: '1753', density: '9.807' },
+      { number: 84, symbol: 'Po', name: 'Polônio', category: 'post-transition', mass: '(209)', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴', state: 'Sólido', discovered: '1898', density: '9.32' },
+      { number: 85, symbol: 'At', name: 'Astato', category: 'halogen', mass: '(210)', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵', state: 'Sólido', discovered: '1940', density: '7' },
+      { number: 86, symbol: 'Rn', name: 'Radônio', category: 'noble-gas', mass: '(222)', electron: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶', state: 'Gasoso', discovered: '1900', density: '0.00973' },
+      { number: 87, symbol: 'Fr', name: 'Frâncio', category: 'alkali-metal', mass: '(223)', electron: '[Rn] 7s¹', state: 'Sólido', discovered: '1939', density: '1.87' },
+      { number: 88, symbol: 'Ra', name: 'Rádio', category: 'alkaline-earth', mass: '(226)', electron: '[Rn] 7s²', state: 'Sólido', discovered: '1898', density: '5.5' },
+      { number: 89, symbol: 'Ac', name: 'Actínio', category: 'actinoid', mass: '(227)', electron: '[Rn] 6d¹ 7s²', state: 'Sólido', discovered: '1899', density: '10.07' },
+      { number: 90, symbol: 'Th', name: 'Tório', category: 'actinoid', mass: '232.04', electron: '[Rn] 6d² 7s²', state: 'Sólido', discovered: '1829', density: '11.72' },
+      { number: 91, symbol: 'Pa', name: 'Protactínio', category: 'actinoid', mass: '231.04', electron: '[Rn] 5f² 6d¹ 7s²', state: 'Sólido', discovered: '1913', density: '15.37' },
+      { number: 92, symbol: 'U', name: 'Urânio', category: 'actinoid', mass: '238.03', electron: '[Rn] 5f³ 6d¹ 7s²', state: 'Sólido', discovered: '1789', density: '18.95' },
+      { number: 93, symbol: 'Np', name: 'Neptúnio', category: 'actinoid', mass: '237.05', electron: '[Rn] 5f⁴ 6d¹ 7s²', state: 'Sólido', discovered: '1940', density: '20.45' },
+      { number: 94, symbol: 'Pu', name: 'Plutônio', category: 'actinoid', mass: '244', electron: '[Rn] 5f⁶ 6d¹ 7s²', state: 'Sólido', discovered: '1940', density: '19.84' },
+      { number: 95, symbol: 'Am', name: 'Amerício', category: 'actinoid', mass: '243', electron: '[Rn] 5f⁷ 6d¹ 7s²', state: 'Sólido', discovered: '1944', density: '13.69' },
+      { number: 96, symbol: 'Cm', name: 'Cúrio', category: 'actinoid', mass: '247', electron: '[Rn] 5f⁸ 6d¹ 7s²', state: 'Sólido', discovered: '1944', density: '13.51' },
+      { number: 97, symbol: 'Bk', name: 'Berkélio', category: 'actinoid', mass: '247', electron: '[Rn] 5f⁹ 6d¹ 7s²', state: 'Sólido', discovered: '1949', density: '14.79' },
+      { number: 98, symbol: 'Cf', name: 'Califórnio', category: 'actinoid', mass: '251', electron: '[Rn] 5f¹⁰ 6d¹ 7s²', state: 'Sólido', discovered: '1950', density: '15.1' },
+      { number: 99, symbol: 'Es', name: 'Einstênio', category: 'actinoid', mass: '252', electron: '[Rn] 5f¹¹ 6d¹ 7s²', state: 'Sólido', discovered: '1952', density: '8.84' },
+      { number: 100, symbol: 'Fm', name: 'Férmio', category: 'actinoid', mass: '257', electron: '[Rn] 5f¹² 6d¹ 7s²', state: 'Sólido', discovered: '1952', density: '9.7' },
+      { number: 101, symbol: 'Md', name: 'Mendelévio', category: 'actinoid', mass: '258', electron: '[Rn] 5f¹³ 6d¹ 7s²', state: 'Sólido', discovered: '1955', density: '10.3' },
+      { number: 102, symbol: 'No', name: 'Nobelium', category: 'actinoid', mass: '259', electron: '[Rn] 5f¹⁴ 6d¹ 7s²', state: 'Sólido', discovered: '1958', density: '9.9' },
+      { number: 103, symbol: 'Lr', name: 'Lawrêncio', category: 'actinoid', mass: '262', electron: '[Rn] 5f¹⁴ 6d² 7s²', state: 'Sólido', discovered: '1961', density: '14.4' },
+      { number: 104, symbol: 'Rf', name: 'Rutherfordium', category: 'transition', mass: '267', electron: '[Rn] 5f¹⁴ 6d² 7s²', state: 'Sólido', discovered: '1964', density: '17' },
+      { number: 105, symbol: 'Db', name: 'Dúbnium', category: 'transition', mass: '270', electron: '[Rn] 5f¹⁴ 6d³ 7s²', state: 'Sólido', discovered: '1967', density: '21.6' },
+      { number: 106, symbol: 'Sg', name: 'Seabórgio', category: 'transition', mass: '271', electron: '[Rn] 5f¹⁴ 6d⁴ 7s²', state: 'Sólido', discovered: '1974', density: '23-24' },
+      { number: 107, symbol: 'Bh', name: 'Bohrium', category: 'transition', mass: '270', electron: '[Rn] 5f¹⁴ 6d⁵ 7s²', state: 'Sólido', discovered: '1981', density: '26-27' },
+      { number: 108, symbol: 'Hs', name: 'Hassio', category: 'transition', mass: '277', electron: '[Rn] 5f¹⁴ 6d⁶ 7s²', state: 'Sólido', discovered: '1984', density: '27-29' },
+      { number: 109, symbol: 'Mt', name: 'Meitnério', category: 'transition', mass: '276', electron: '[Rn] 5f¹⁴ 6d⁷ 7s²', state: 'Sólido', discovered: '1982', density: '27-28' },
+      { number: 110, symbol: 'Ds', name: 'Darmstádtio', category: 'transition', mass: '281', electron: '[Rn] 5f¹⁴ 6d⁸ 7s²', state: 'Sólido', discovered: '1994', density: '34-35' },
+      { number: 111, symbol: 'Rg', name: 'Roentgênio', category: 'transition', mass: '280', electron: '[Rn] 5f¹⁴ 6d⁹ 7s²', state: 'Sólido', discovered: '1994', density: '28-29' },
+      { number: 112, symbol: 'Cn', name: 'Copernício', category: 'post-transition', mass: '285', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s²', state: 'Sólido', discovered: '1996', density: '14.0' },
+      { number: 113, symbol: 'Nh', name: 'Nihonium', category: 'post-transition', mass: '(286)', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹', state: 'Sólido', discovered: '2003', density: '16' },
+      { number: 114, symbol: 'Fl', name: 'Fleróvio', category: 'post-transition', mass: '(289)', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²', state: 'Sólido', discovered: '1998', density: '14' },
+      { number: 115, symbol: 'Mc', name: 'Moscovium', category: 'post-transition', mass: '(288)', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³', state: 'Sólido', discovered: '2003', density: '13.5' },
+      { number: 116, symbol: 'Lv', name: 'Livermório', category: 'post-transition', mass: '(293)', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴', state: 'Sólido', discovered: '2000', density: '12.9' },
+      { number: 117, symbol: 'Ts', name: 'Tennessine', category: 'halogen', mass: '(294)', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵', state: 'Sólido', discovered: '2010', density: '7.2' },
+      { number: 118, symbol: 'Og', name: 'Oganesson', category: 'noble-gas', mass: '(294)', electron: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶', state: 'Gasoso', discovered: '2002', density: '4.9' }
+    ];
+
+    const DOM = {
+      periodicTable: document.getElementById('periodicTable'),
+      modal: document.getElementById('modal'),
+      modalSymbol: document.getElementById('modalSymbol'),
+      modalName: document.getElementById('modalName'),
+      modalNumber: document.getElementById('modalNumber'),
+      modalSymbol2: document.getElementById('modalSymbol2'),
+      modalMass: document.getElementById('modalMass'),
+      modalCategory: document.getElementById('modalCategory'),
+      modalCategory2: document.getElementById('modalCategory2'),
+      modalElectron: document.getElementById('modalElectron'),
+      modalState: document.getElementById('modalState'),
+      modalDiscovered: document.getElementById('modalDiscovered'),
+      modalDensity: document.getElementById('modalDensity'),
+      closeBtn: document.getElementById('closeBtn'),
+      categoryLegend: document.getElementById('categoryLegend'),
+      clearFilter: document.getElementById('clearFilter')
+    };
+
+    const utils = {
+      formatCategory: (category) => {
+        return category
+          .replace('-', ' ')
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      },
+      
+      getCategoryColor: (category) => {
+        return getComputedStyle(document.documentElement)
+          .getPropertyValue(`--${category}`).trim();
+      }
+    };
+
+    const modalHandler = {
+      show: (element) => {
+        const { modalSymbol, modalName, modalNumber, modalSymbol2, 
+                modalMass, modalCategory, modalCategory2, 
+                modalElectron, modalState, modalDiscovered, modalDensity } = DOM;
+        
+        modalSymbol.textContent = element.symbol;
+        modalName.textContent = element.name;
+        modalNumber.textContent = element.number;
+        modalSymbol2.textContent = element.symbol;
+        modalMass.textContent = element.mass;
+        modalElectron.textContent = element.electron;
+        modalState.textContent = element.state;
+        modalDiscovered.textContent = element.discovered;
+        modalDensity.textContent = element.density;
+        
+        const categoryFormatted = utils.formatCategory(element.category);
+        modalCategory.textContent = categoryFormatted;
+        modalCategory2.textContent = categoryFormatted;
+        
+        modalSymbol.style.color = utils.getCategoryColor(element.category);
+        DOM.modal.classList.add('active');
+      },
+      
+      close: () => {
+        DOM.modal.classList.remove('active');
+      }
+    };
+
+    const filterHandler = {
+      currentCategory: null,
+      
+      filterByCategory: (category) => {
+        filterHandler.currentCategory = category;
+        
+
+        document.querySelectorAll('.legend-item').forEach(item => {
+          if (item.dataset.category === category) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        const elements = document.querySelectorAll('.element');
+        elements.forEach(el => {
+          if (el.classList.contains(category)) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+
+        DOM.clearFilter.classList.add('active');
+      },
+      
+      clearFilter: () => {
+        filterHandler.currentCategory = null;
+
+        document.querySelectorAll('.legend-item').forEach(item => {
+          item.classList.remove('active');
+        });
+
+        const elements = document.querySelectorAll('.element');
+        elements.forEach(el => {
+          el.classList.remove('hidden');
+        });
+
+        DOM.clearFilter.classList.remove('active');
+      }
+    };
+
+    function createPeriodicTable() {
+      elements.forEach((element, index) => {
+        const el = document.createElement('div');
+        el.className = `element ${element.category}`;
+        el.style.setProperty('--delay', index);
+        el.innerHTML = `
+          <div class="atomic-number">${element.number}</div>
+          <div class="symbol">${element.symbol}</div>
+          <div class="name">${element.name}</div>
+          <div class="mass">${element.mass}</div>
+          <div class="electron-config">${element.electron}</div>
+        `;
+        
+        el.addEventListener('click', () => modalHandler.show(element));
+        DOM.periodicTable.appendChild(el);
+      });
+    }
+
+    function setupEventListeners() {
+      DOM.closeBtn.addEventListener('click', modalHandler.close);
+      
+      DOM.modal.addEventListener('click', (e) => {
+        if (e.target === DOM.modal) modalHandler.close();
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && DOM.modal.classList.contains('active')) {
+          modalHandler.close();
+        }
+      });
+
+      document.querySelectorAll('.legend-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const category = item.dataset.category;
+          filterHandler.filterByCategory(category);
+        });
+      });
+      
+      DOM.clearFilter.addEventListener('click', filterHandler.clearFilter);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createPeriodicTable();
+      setupEventListeners();
+    });
+  </script>
+</body>
+</html>
